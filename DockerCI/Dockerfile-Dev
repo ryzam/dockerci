@@ -1,0 +1,12 @@
+FROM microsoft/dotnet:2.0.6-sdk-2.1.101-jessie AS builder
+COPY . src
+WORKDIR src
+RUN dotnet restore
+RUN dotnet publish -c release -o obj/Docker/publish
+
+FROM microsoft/aspnetcore:2.0
+ARG source
+WORKDIR /app
+EXPOSE 80
+COPY obj/Docker/publish .
+ENTRYPOINT ["dotnet", "DockerCI.dll"]
